@@ -1,0 +1,56 @@
+
+
+import javax.crypto.SecretKey;
+import javax.crypto.KeyGenerator;
+import javax.crypto.spec.GCMParameterSpec;
+import java.util.Base64;
+import javax.crypto.Cipher;
+
+
+public class AES_ENCRYPTION
+{
+    SecretKey key;
+    Cipher encryptioncipher;
+    final int key_size=128;
+    final int data_length=128;
+    public void init() throws Exception
+    {
+        KeyGenerator keyGenerator=KeyGenerator.getInstance("AES");
+        keyGenerator.init(key_size);
+        key=keyGenerator.generateKey();
+    }
+    public String encode(byte data[] )
+    {
+        return Base64.getEncoder().encodeToString(data);
+    }
+    public byte[] decode(String data )
+    {
+        return Base64.getDecoder().decode(data);
+    }
+    public String encrypt(String data) throws Exception
+    {
+        byte [] datainbyte=data.getBytes();
+        encryptioncipher=Cipher.getInstance("AES/GCM/NoPadding");
+        encryptioncipher.init(Cipher.ENCRYPT_MODE,key);
+        byte [] enc=encryptioncipher.doFinal(datainbyte);
+        return  encode(enc);
+    }
+    public String decrypt(String data) throws Exception
+    {
+        byte datainbyte[]=decode(data);
+        Cipher decryptdata=Cipher.getInstance("AES/GCM/NoPadding");
+        GCMParameterSpec spec=new GCMParameterSpec(data_length,encryptioncipher.getIV());
+        decryptdata.init(Cipher.DECRYPT_MODE,key,spec);
+        byte des[]=decryptdata.doFinal(datainbyte);
+        return new String(des);
+
+    }
+    public static void main(String[] args) throws Exception {
+        AES_ENCRYPTION ae=new AES_ENCRYPTION();
+        ae.init();
+        String e=ae.encrypt("Hello");
+        String d=ae.decrypt(e);
+        System.out.println(e);
+        System.out.println(d);
+    }
+}

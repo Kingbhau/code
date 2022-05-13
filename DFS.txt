@@ -1,0 +1,55 @@
+
+import java.util.LinkedList;
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Dfspractice {
+    private LinkedList<Integer> ad[];
+    public Dfspractice(int v)
+    {
+        ad=new LinkedList[v];
+        for (int i = 0; i < v; i++) {
+            ad[i]=new LinkedList<>();
+        }
+    }
+    public void addEdges(int s,int d)
+    {
+        ad[s].add(d);
+        ad[d].add(s);
+    }
+    public void DfsTravsersal(int s)
+    {
+        boolean visited[]=new boolean[ad.length];
+        visited[s]=true;
+        Stack<Integer> st=new Stack<>();
+        st.add(s);
+        while (!st.isEmpty()) {
+            int x=st.pop();
+            System.out.print(x+" ");
+            for (int i = 0; i < ad[x].size(); i++) {
+                if (visited[ad[x].get(i)] == false) {
+                    visited[ad[x].get(i)]=true;
+                    st.add(ad[x].get(i));
+                }
+            }
+        }
+    }
+    public static void main(String[] args) {
+        int v,d,s,e,ee1,ee2;
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Enter Vertex and edges");
+        v=sc.nextInt();
+        e=sc.nextInt();
+        Dfspractice b=new Dfspractice(v);
+        for (int i = 0; i < e; i++) {
+            System.out.println("Edge "+(i+1));
+            ee1=sc.nextInt();
+            ee2=sc.nextInt();
+            b.addEdges(ee1,ee2);
+
+        }
+        System.out.println("Enter Source");
+        s=sc.nextInt();
+        b.DfsTravsersal(s);
+    }
+}
